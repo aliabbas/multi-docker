@@ -1,0 +1,22 @@
+sudo: required
+services:
+  - docker
+
+before_install:
+  - docker build -t alisabbas/react-test -f ./client/Dockerfile.dev ./client
+
+script:
+  - docker run alisabbas/react-test npm run test -- --coverage
+
+after_success:
+  - docker build -t alisabbas/multi-client ./client
+  - docker build -t alisabbas/multi-nginx ./nginx
+  - docker build -t alisabbas/multi-server ./server
+  - docker build -t alisabbas/multi-worker ./worker
+# Log in to the docker CLI
+- echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+# Push built images to docker hub
+- docker push alisabbas/multi-client
+- docker push alisabbas/multi-nginx
+- docker push alisabbas/multi-server
+- docker push alisabbas/multi-worker
