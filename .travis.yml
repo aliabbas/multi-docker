@@ -6,7 +6,7 @@ before_install:
   - docker build -t alisabbas/react-test -f ./client/Dockerfile.dev ./client
 
 script:
-  - docker run alisabbas/react-test npm run test -- -coverage
+  - docker run alisabbas/react-test npm test -- --coverage
 
 after_success:
   - docker build -t alisabbas/multi-client ./client
